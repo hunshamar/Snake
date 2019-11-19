@@ -4,12 +4,12 @@ all:
 	@echo "please export PTX_KERNEL_DIR"
 
 clean:
-	rm -rf *.o *.ko *.kmod *.mod.c .*.cmd .*.o.d Module.symvers .tmp_versions modules.order
+	rm -rf  *.o *.ko *.kmod *.mod.c .*.cmd .*.o.d Module.symvers .tmp_versions modules.order
 
 else
 
-obj-m	:= driver-gamepad.o
-CFLAGS_MODULE := -mlong-calls
+obj-m	:= driver-gamepad.o 
+CFLAGS_MODULE := -std=gnu99 -mlong-calls .  
 
 modules modules_install clean:
 	$(MAKE) -C $(PTX_KERNEL_DIR) M=$(CURDIR) V=$(V) $@
