@@ -11,6 +11,7 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 #include "graphics_driver.h"
+#include "fonts.h"
 
 #define NUMBUTTONS 8
 

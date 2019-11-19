@@ -16,3 +16,7 @@
 #include <sys/ioctl.h>
 
 void graphics_init();
+void refresh_framebuffer();
+
+
+void map_reduced_to_full();
