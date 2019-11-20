@@ -1,6 +1,7 @@
 #include "graphics_driver.h"
 
- 
+ #define grass_color 0x7E0F
+
 #include "fonts.h"
 
  
@@ -139,14 +140,14 @@ void graphics_init(){
 
     printf("Init graphics");
 
-    uint16_t color = 0xaaaa;
+    uint16_t color = grass_color;
 	for (int y = 0; y < 24; y++){
 		for (int x = 0; x < 24; x++){
 			reduced_resolution_graphics_array[x][y] = color;
 			//printf("Writing to x,y = %d, %d the color %x \n", x,y,color);
-			color = ~color;
+			//color = ~color;
 		}
-		color = ~color;
+		//color = ~color;
 	}
 
 
