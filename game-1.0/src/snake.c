@@ -8,9 +8,9 @@
 
 #define SEC 1000000000
 #define NUMBUTTONS 8
-#define GRASS_COLOR 0xff
-#define SNAKE_COLOR 0x00
-#define APPLE_COLOR 0xaa
+#define GRASS_COLOR 0x7e0f
+#define SNAKE_COLOR 0x0000
+#define APPLE_COLOR 0xf800
 
 uint32_t score = 0;
 square apple;
@@ -88,11 +88,12 @@ int snake_game(int fps)
         .tv_nsec = SEC/2
     };
     
-
+    print_string(0, 0, "Starting:", 9);
+    print_string(0, 1, "3", 1);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    //set display counter 2
+    print_string(0, 1, "2", 1);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    //set display counter 1
+    print_string(0, 1, "1", 1);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
     //remove display counter
     while(1)
@@ -101,16 +102,12 @@ int snake_game(int fps)
         clock_gettime(CLOCK_REALTIME, &start);
         //Game update code below
         //=====================
-        /*
         update_direction();
-        int end_game = update_game(current_dir, snek);
         if(update_game(current_dir, snek))
         {
-            end_game(score);
+            end_game(score, snek);
             return 1;
         }
-
-        */
         //=====================
         //Game update code above
         clock_gettime(CLOCK_REALTIME, &finish);
