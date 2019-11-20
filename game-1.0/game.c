@@ -19,7 +19,7 @@
  * Converts the active button input 8 bit register number
  * into a boolean array with SW1 mapped as b[0]
  */
-int buttons_pressed(uint8_t input, int* buttons){
+int buttons_pressed(uint8_t input){
 	input = ~input;
 	for (int i = 0; i < NUMBUTTONS; i++){
 		if ((input >> i) & 0x01){

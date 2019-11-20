@@ -7,12 +7,69 @@
 #include <../graphics_driver.h>
 
 #define SEC 1000000000
-
+#define NUMBUTTONS 8
+#define GRASS_COLOR 0xff
+#define SNAKE_COLOR 0x00
+#define APPLE_COLOR 0xaa
 
 uint32_t score = 0;
 square apple;
 Direction current_dir;
+square *non_snake_tiles;
+square *snake_tiles;
 
+
+int buttons_pressed()
+{
+    uint8_t input = 0;
+    int button_file = open("/dev/gamepad", O_RDONLY);
+    read(button_file, &input, 1);
+    close(button_file);
+	input = ~input;
+	for (int i = 0; i < NUMBUTTONS; i++){
+		if ((input >> i) & 0x01){
+			return i;
+		}
+	}
+	return -1;
+}
+
+static void update_direction()
+{
+    if (buttons_pressed() != -1)
+    {
+        int button = buttons_pressed();
+        switch(button)
+        {
+        case 0:
+            current_dir = Left;
+            break;
+        case 1:
+            current_dir = Up;
+            break;
+        case 2:
+            current_dir = Right;
+            break;
+        case 3:
+            current_dir = Down;
+            break;
+        case 4:
+            current_dir = Left;
+            break;
+        case 5:
+            current_dir = Up;
+            break;
+        case 6:
+            current_dir = Right;
+            break;
+        case 7:
+            current_dir = Down;
+            break;
+        default:
+            break;
+        }
+    }
+}
 
 int snake_game(int fps)
 {
@@ -22,6 +79,7 @@ int snake_game(int fps)
         .tv_nsec = SEC/fps
     };
     snake snek;
+    snake prev_snek;
     snake_init(*snek);
     spawn_apple(*snek);
     struct timespec start_sleep = (struct timespec)
@@ -44,9 +102,9 @@ int snake_game(int fps)
         //Game update code below
         //=====================
         /*
-        current_dir = get_direction();
+        update_direction();
         int end_game = update_game(current_dir, snek);
-        if(update_game(get_direction(), snek))
+        if(update_game(current_dir, snek))
         {
             end_game(score);
             return 1;
@@ -117,6 +175,7 @@ static void spawn_apple(snake* snek)
             valid = 0;
             spawn_apple(snek);
         }
+        checkbox = checkbox->next;
     }
     if(valid)
     {
@@ -127,6 +186,7 @@ static void spawn_apple(snake* snek)
 
 static void pop_back(snake *snek)
 {
+    draw_pixel(snek->back->x, snek->back->y, GRASS_COLOR);
     snek->back = snek->back.previous;
     free(snek->back.next);
     snek->back->next = NULL;
@@ -157,6 +217,7 @@ static void append_back(snake *snek, Direction dir)
     snek->back->next = appendix;
     appendix->previous = snek->back;
     snek->back = appendix;
+    draw_pixel(snek->back->x, snek->back->y, SNAKE_COLOR);
 }
 
 static void append_front(snake *snek, Direction dir)
@@ -184,6 +245,7 @@ static void append_front(snake *snek, Direction dir)
     snek->front->previous = appendix;
     appendix->next = snek->back;
     snek->front = appendix;
+    draw_pixel(snek->head->x, snek->head->y, SNAKE_COLOR);
 }
 
 static void delete_snake(snake *snek)
@@ -251,11 +313,12 @@ static void snake_init(snake *snek)
     head->y = 11;
     snek->head = head;
     snek->back = head;
+    draw_pixel(snek->head->x, snek->head->y, SNAKE_COLOR);
     append_back(snek, Left);
     append_back(snek, Left);
 }
 
-static void end_game(int score)
+static void end_game(int score, snake *snek)
 {
-    
+    delete_snake(snek);
 }
