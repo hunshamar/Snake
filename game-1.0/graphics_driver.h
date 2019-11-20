@@ -15,8 +15,22 @@
 #include <linux/fb.h>
 #include <sys/ioctl.h>
 
+#include <string.h>
+
 void graphics_init();
 void refresh_framebuffer();
 
-
+void update_screen();
 void map_reduced_to_full();
+void print_string(int x, int y, char* string, int strlength);
+
+
+
+void refresh_score_display();
+void refresh_reduced_grid(int x, int y, int width, int height);
+void refresh_text_display();
+
+void draw_pixel(int x, int y, uint16_t color);
+
+
+void update_score(int score);
