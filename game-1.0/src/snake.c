@@ -3,12 +3,15 @@
 #include <time.h>
 #include <errno.h>
 #include <stdlib.h>
-#include "../inc/display.h"
+#include <stdint.h>
+#include <../graphics_driver.h>
+
 #define SEC 1000000000
 
 
 uint32_t score = 0;
 square apple;
+Direction current_dir;
 
 
 int snake_game(int fps)
@@ -21,18 +24,18 @@ int snake_game(int fps)
     snake snek;
     snake_init(*snek);
     spawn_apple(*snek);
-    //update_display()
     struct timespec start_sleep = (struct timespec)
     {
         .tv_sec = 0,
         .tv_nsec = SEC/2
     };
-    //set display counter 3
-    while(nanosleep(&start_sleep, &start_sleep) && errno = EINTR);
+    
+
+    while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
     //set display counter 2
-    while(nanosleep(&start_sleep, &start_sleep) && errno = EINTR);
+    while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
     //set display counter 1
-    while(nanosleep(&start_sleep, &start_sleep) && errno = EINTR);
+    while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
     //remove display counter
     while(1)
     {
@@ -41,7 +44,8 @@ int snake_game(int fps)
         //Game update code below
         //=====================
         /*
-        
+        current_dir = get_direction();
+        int end_game = update_game(current_dir, snek);
         if(update_game(get_direction(), snek))
         {
             end_game(score);
@@ -99,7 +103,7 @@ void snake_move(snake *self, Direction dir)
 
 
 
-void spawn_apple(snake* snek)
+static void spawn_apple(snake* snek)
 {
     srand(time(0));
     int x = rand() % 24;
@@ -182,6 +186,14 @@ static void append_front(snake *snek, Direction dir)
     snek->front = appendix;
 }
 
+static void delete_snake(snake *snek)
+{
+    while (snek->back != NULL)
+    {
+        pop_back(snek);
+    }
+}
+
 int update_game(Direction dir, snake *snek)
 {
     int next_x, next_y;
@@ -218,6 +230,15 @@ int update_game(Direction dir, snake *snek)
     {
         return 1;
     }
+    square *current = snek->head;
+    while(current != NULL)
+    {
+        if ((snek->head->x == current->x) || (snek->head->y == current->y))
+        {
+            return 1;
+        }
+        current = current->next;
+    }
     return 0;
 }
 
@@ -234,14 +255,7 @@ static void snake_init(snake *snek)
     append_back(snek, Left);
 }
 
-void end_game(int score)
+static void end_game(int score)
 {
-    //Pause game for like .5 secs
-    //Display "game over"
-    //wait for .5 secs
-    //Ask user to press button
-    //wait for user input
-    //Display score
-    //Ask user to press button
-    //Go to start menu
+    
 }
