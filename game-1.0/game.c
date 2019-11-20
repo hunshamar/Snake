@@ -19,11 +19,14 @@
  * Converts the active button input 8 bit register number
  * into a boolean array with SW1 mapped as b[0]
  */
-void buttons_pressed(uint8_t input, int* buttons){
+int buttons_pressed(uint8_t input, int* buttons){
 	input = ~input;
 	for (int i = 0; i < NUMBUTTONS; i++){
-		buttons[i] = (input >> i) & 0x01;
+		if ((input >> i) & 0x01){
+			return i;
+		}
 	}
+	return -1;
 }
 
 
@@ -39,9 +42,13 @@ int main(int argc, char *argv[])
 
 
     uint8_t input = 0;
+    //uint8_t last_input = 255;
+
     int buttons[NUMBUTTONS];
 
     int score = 0;
+    int direction = -1;	
+    int last_direction = -1;
 
     int x = 1;
    	int y = 1;
@@ -52,22 +59,42 @@ int main(int argc, char *argv[])
 	    
 	    read( descr, &input, 1);
 	    buttons_pressed(input, buttons);
+
+	    //printf("Input = %d", input);
 	    
 
 	    update_score(score);
 
 	    score+=10;
 
-	    if (score == 100){
-	    	print_string(1,12,"The Game", 8);
-	    	print_string(1,13,"Hei", 3);
-	    	print_string(1,14,"Korleis", 7);
-	    	print_string(1,15,"gjenge", 6);
-	    	print_string(1,16,"det?", 4);
-	    	
 
-	    	//refresh_framebuffer(0,0,320,240);	
-	    } 
+	    if (input != 255){
+	    	direction = buttons_pressed(input, buttons);
+	    	if (direction != last_direction){
+	    		last_direction = direction;
+		    	switch(direction){
+		    	case 0:
+			    	print_string(1,12,"Button: L", 9);
+			    	break;
+			    case 1:
+			    	print_string(1,12,"Button: U", 9);
+			    	break;
+		    	case 2:
+		    		print_string(1,12,"Button: R", 9);
+		    		break;
+		    	case 3:
+		    		print_string(1,12,"Button: D", 9);
+		    		break;
+		    	}
+	    	}
+	    }
+
+
+
+
+
+
+
 
 	    
 	    if (score % 100 == 0 && score < 2100){
