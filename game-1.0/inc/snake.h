@@ -27,11 +27,6 @@ struct snake
 };
 
 
-//other module functions
-
-
-void spawn_apple(snake* snake);
-
 //starts the snake game
 int snake_game(int fps);
 
