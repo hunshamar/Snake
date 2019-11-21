@@ -1,6 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-#include "inc/snake.h"
+#include "snake.h"
 #include <time.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -23,7 +23,8 @@
 
 int main(int argc, char *argv[])
 {
-	snake_game(2);
+	graphics_init();	
+	snake_game(8);
 	exit(EXIT_SUCCESS);
 }
 

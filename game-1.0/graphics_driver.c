@@ -23,13 +23,10 @@ bool get_bit(char c, int n){
 
 char* int_to_string(int score){ //Combines char with int for easy oled-printing
 
-	printf("Converting the score: %d to a string \n", score);
 
     char string[5]; 
     sprintf(string, "%d", score);
-
-    printf("The string is [%s]\n", string);
-
+ 	
     return string;
 
 }
@@ -67,8 +64,6 @@ void print_char(int x, int y, char c){
 }
 
 void print_string(int x, int y, char* string, int strlength){
-	printf("String printed: [%s] \n", string);
-
 	for (int i = 0; i < strlength; i++){
 		print_char(x+i,y,string[i]);
 
@@ -138,7 +133,7 @@ void graphics_init(){
 
 
 
-    printf("Init graphics");
+    printf("Init graphics Bendik");
 
     uint16_t color = grass_color;
 	for (int y = 0; y < 24; y++){
@@ -244,7 +239,6 @@ void refresh_score_display(){
 
 void refresh_reduced_grid(int x, int y, int width, int height){
 
-	printf("Refreshing from x = %d to y = %d with w: %d h : %d \n", 80+x*10, y*10, width*10, height*10);
 	refresh_framebuffer(80+x*10,y*10,width*10,height*10);	
 }	
 
@@ -258,7 +252,6 @@ void map_reduced_to_full(){
 	int k = 0;
 	for(int i = 0; i < 240; i++){
 		for (int j = 0; j < 320; j++){
-			printf("writing to screen\n");
 			fbp[k] = 0x0011;//reduced_resolution_graphics_array[x][y];
 			k++;
 			

@@ -12,7 +12,7 @@ CFLAGS += -O2 -g -Wall -std=gnu99 #-Wsign-compare -Wfloat-equal -Wformat-securit
 CPPFLAGS +=
 LDFLAGS += -lm
 
-OBJ = game.o graphics_driver.o
+OBJ = game.o graphics_driver.o snake.o
 
 all: game
 game: ${OBJ}

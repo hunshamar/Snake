@@ -23,11 +23,10 @@ typedef struct snake
 {
     square* head; //pointer to head square of snake body
     square* back; //pointer to back square
+    int size;
 } snake;
 
 
 //starts the snake game
 int snake_game(int fps);
-
-
 #endif
