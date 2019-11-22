@@ -70,7 +70,7 @@ static int __init gamepad_init(void)
     {
         printk(KERN_ALERT "Error requesting region: GPIO_PC_DIN\n");
         return -1;
-	}
+    }
 
     /* Setup for GPIO */
     iowrite32(0x33333333, GPIO_PC_MODEL); // set buttons as input
@@ -81,12 +81,8 @@ static int __init gamepad_init(void)
     /* Allocate and initialize cdev structure */
     cdev_init(&cdev, &my_fops);
     cdev.owner = THIS_MODULE;
-    int err = cdev_add(&cdev, dev, COUNT);
-    if (err){
-        printf(KERN_NOTICE "Error %d adding gamepad", err);
-        return -1;
-    }
-        
+    cdev_add(&cdev, dev, COUNT);
+      
     
     cl = class_create(THIS_MODULE, NAME);
     device_create(cl, NULL, dev, NULL, NAME);

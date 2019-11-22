@@ -21,15 +21,7 @@ bool get_bit(char c, int n){
 	return c & 1 << n;	
 }
 
-char* int_to_string(int score){ //Combines char with int for easy oled-printing
 
-
-    char string[5]; 
-    sprintf(string, "%d", score);
- 	
-    return string;
-
-}
 
 void draw_pixel(int x, int y, uint16_t color){
 	reduced_resolution_graphics_array[x][y] = color;
@@ -127,7 +119,7 @@ void graphics_init(){
 
 
 
-    printf("Init graphics Bendik");
+    printf("Init graphics");
 
     uint16_t color = grass_color;
 	for (int y = 0; y < 24; y++){
@@ -156,14 +148,25 @@ void graphics_init(){
     update_char_array();
 	update_screen();
 	refresh_framebuffer(0,0,320,240);
+
+	print_string(1,14,"Welcome",7);
+    print_string(1,15,"   To  ",7);
+    print_string(1,16," Snake!",7);
+
+    print_string(0,18,"Creators:",9);
+    print_string(1,19,"Asgeir ",7);
+    print_string(1,20,"Bendik ",7);
+    print_string(1,21,"Marcus ",7);
+
+
 }
 
 void update_score(int score){
 
-	char score_buffer[5]; 
+	char score_buffer[6]; 
     sprintf(score_buffer, "%d", score);
 
-	for (int x = 0; x < 5; x++){
+	for (int x = 0; x < 6; x++){
 		if (score_buffer[x] >= '0' && score_buffer[x] <= '9'){
 			print_char(x+2,6, score_buffer[x]); //*string++);
 		}
@@ -199,7 +202,7 @@ void update_screen(){
 }
 
 void refresh_score_display(){
-	refresh_framebuffer(16,48,40,8);
+	refresh_framebuffer(16,48,48,8);
 }
 
 void refresh_reduced_grid(int x, int y, int width, int height){
