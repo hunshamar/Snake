@@ -1,10 +1,10 @@
-#include "../inc/snake.h"
+#include "snake.h"
 #define _POSIX_C_SOURCE 199309L
 #include <time.h>
 #include <errno.h>
 #include <stdlib.h>
 #include <stdint.h>
-#include <../graphics_driver.h>
+#include <graphics_driver.h>
 
 #define SEC 1000000000
 #define NUMBUTTONS 8
@@ -158,19 +158,19 @@ void snake_move(snake *self, Direction dir)
 
 
 
-static void spawn_apple(snake* snek)
+static void spawn_apple()
 {
     srand(time(0));
     int x = rand() % 24;
     int y = rand() % 24;
-    square *checkbox = snek->head;
+    square *checkbox = snek.head;
     int valid = 1;
     while(checkbox != NULL)
     {
         if ((x == checkbox->x) && (y == checkbox->y))
         {
             valid = 0;
-            spawn_apple(snek);
+            spawn_apple();
         }
         checkbox = checkbox->next;
     }
@@ -183,9 +183,9 @@ static void spawn_apple(snake* snek)
 
 static void pop_back(snake *snek)
 {
-    draw_pixel(snek->back->x, snek->back->y, GRASS_COLOR);
+    draw_pixel(snek.back->x, snek.back->y, GRASS_COLOR);
     snek->back = snek->back.previous;
-    free(snek->back.next);
+    free(snek.back.next);
     snek->back->next = NULL;
 }
 
@@ -277,13 +277,13 @@ int update_game(Direction dir, snake *snek)
     }
     if ((next_x == apple.x) && (next_y == apple.y))
     {
-        append_front(snek, dir);
-        spawn_apple(snek);
+        append_front(dir);
+        spawn_apple();
         score += 500;
     }
     else
     {
-        snake_move(snek, dir);
+        snake_move(dir);
     }
     if ((snek->head->x >= 24) || (snek->head->x < 0) || (snek->head->y >= 24) || (snek->head->y < 0))
     {
@@ -310,12 +310,12 @@ static void snake_init(snake *snek)
     head->y = 11;
     snek->head = head;
     snek->back = head;
-    draw_pixel(snek->head->x, snek->head->y, SNAKE_COLOR);
-    append_back(snek, Left);
-    append_back(snek, Left);
+    draw_pixel(snek.head->x, snek.head->y, SNAKE_COLOR);
+    append_back(Left);
+    append_back(Left);
 }
 
 static void end_game(int score, snake *snek)
 {
-    delete_snake(snek);
+    delete_snake();
 }
