@@ -277,7 +277,17 @@ static void snake_init()
 
 void end_game(int score)
 {
+
+
     delete_snake();
+    for (int y = 0; y < 3; y++){
+        print_string(0,y, " GAME OVER", 10);
+    }
+    for (int y = 8; y < 30; y++){
+        print_string(0,y, " GAME OVER", 10);
+    }
+
+
 }
 
 int snake_game(int fps)
@@ -295,15 +305,15 @@ int snake_game(int fps)
         .tv_nsec = SEC/2
     };
     
-    print_string(0, 0, "Starting:", 9);
-    print_string(0, 1, "3", 1);
+    print_string(0, 9, "Starting:", 9);
+    print_string(3, 10, "333", 3);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(0, 1, "2", 1);
+    print_string(3, 10, "222", 3);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(0, 1, "1", 1);
+    print_string(3, 10, "111", 3);
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(0, 1, " ", 1);
-    print_string(0, 0, "         ", 9);
+    print_string(3, 10, "   ", 3);
+    print_string(0, 9, "         ", 9);
     //remove display counter
     while(1)
     {
