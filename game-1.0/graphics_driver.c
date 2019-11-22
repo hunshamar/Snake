@@ -102,27 +102,24 @@ void graphics_init(){
     if (graphic_memory == -1)  //oko
         printf("Error: unable to open framebuffer device.\n");
 
-
-
 	int screensize = 320*240;
-
 	int screensize_bytes = screensize / 8;
 
     fbp = (uint16_t*)mmap(NULL, screensize_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, graphic_memory, 0);
  	if ((int)fbp == MAP_FAILED) {
         printf("Error: failed to memorymap framebuffer.\n");
-        
     }
 
-    
-    
+	print_string(2,2,"Hello.", 6);
 
-	
-	print_string(2,4,"Score:", 6);
+	char* string = "Score:";
+	for (int x = 0; x < 6; x++){
+		print_char(x+2,4, string[x]); //*string++);
+	}	
 
 
 
-    printf("Init graphics Bendik");
+    printf("Init graphics");
 
     uint16_t color = grass_color;
 	for (int y = 0; y < 24; y++){
@@ -183,19 +180,6 @@ void update_score(int score){
 }
 
 void update_screen(){
-
-
-
-
-	
-
-	
-
-
-
-
-		
-
 		//map_reduced_to_full();
 		int x = 0;
 		int y = 0;
@@ -208,16 +192,16 @@ void update_screen(){
 			//printf("I to 240, now: %d \n", i);
 			
 
-			for (int j1 = 0; j1 < 80; j1++){
-				fbp[k++] = score_array[j1][i];
+			for (int j = 0; j < 80; j++){
+				fbp[k++] = score_array[j][i];
 			}
 			
 			
 			
 
 
-			for (int j2 = 0; j2 < 240; j2++){
-				if (j2 % 10 == 0 && j2){
+			for (int k = 0; k < 240; k++){
+				if (k % 10 == 0 && k){
 					x++;
 					//printf("X is %d\n",x);
 				}
@@ -225,8 +209,6 @@ void update_screen(){
 				fbp[k] = reduced_resolution_graphics_array[x][y];
 				//printf("Writin x,y = %d, %d", x,y);
 				k++;
-				
-				
 			}
 			x = 0;		
 	}	
@@ -264,7 +246,6 @@ void map_reduced_to_full(){
 		}
 	}
 }
-
 
 
 void refresh_framebuffer(int x, int y, int width, int height){
