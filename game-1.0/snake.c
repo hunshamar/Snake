@@ -208,9 +208,15 @@ void snake_move(Direction dir)
 
 static void delete_snake()
 {
+    struct timespec sleep_time = (struct timespec)
+    {
+        .tv_sec = 0,
+        .tv_nsec = SEC/20
+    };
     while (snek.back != NULL)
     {
         pop_back(snek);
+        while(nanosleep(&sleep_time, &sleep_time) && errno == EINTR);
     }
 }
 
@@ -281,10 +287,10 @@ void end_game(int score)
 
     delete_snake();
     for (int y = 0; y < 3; y++){
-        print_string(0,y, " GAME OVER", 10);
+        print_string(0,y, " GAME OVER ");
     }
     for (int y = 8; y < 30; y++){
-        print_string(0,y, " GAME OVER", 10);
+        print_string(0,y, " GAME OVER ");
     }
 
 
@@ -305,15 +311,15 @@ int snake_game(int fps)
         .tv_nsec = SEC/2
     };
     
-    print_string(0, 9, "Starting:", 9);
-    print_string(3, 10, "333", 3);
+    print_string(0, 9, "Starting:");
+    print_string(3, 10, "333");
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(3, 10, "222", 3);
+    print_string(3, 10, "222");
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(3, 10, "111", 3);
+    print_string(3, 10, "111");
     while(nanosleep(&start_sleep, &start_sleep) && errno == EINTR);
-    print_string(3, 10, "   ", 3);
-    print_string(0, 9, "         ", 9);
+    print_string(3, 10, "   ");
+    print_string(0, 9, "         ");
     //remove display counter
     while(1)
     {

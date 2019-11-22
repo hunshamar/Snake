@@ -20,9 +20,9 @@
 void graphics_init();
 void refresh_framebuffer();
 
-void update_screen();
+void update_screen(int screen_x, int screen_y, int width, int height);
 void map_reduced_to_full();
-void print_string(int x, int y, char* string, int strlength);
+void print_string(int x, int y, char* string);
 
 
 
@@ -31,6 +31,7 @@ void refresh_reduced_grid(int x, int y, int width, int height);
 void refresh_text_display();
 
 void draw_pixel(int x, int y, uint16_t color);
+void update_char_array();
 
 
 void update_score(int score);

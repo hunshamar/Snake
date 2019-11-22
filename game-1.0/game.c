@@ -23,6 +23,7 @@
 
 int main(int argc, char *argv[])
 {
+
 	graphics_init();	
 	snake_game(8);
 	exit(EXIT_SUCCESS);
