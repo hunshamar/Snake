@@ -16,7 +16,7 @@ struct snake_square
     square* next;
     square* previous;
 };
-
+    
 
 typedef snake snake;
 struct snake
