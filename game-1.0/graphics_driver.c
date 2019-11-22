@@ -180,39 +180,25 @@ void update_score(int score){
 }
 
 void update_screen(){
-		//map_reduced_to_full();
 		int x = 0;
 		int y = 0;
 		int k = 0;
 		for(int i = 0; i < 240; i++){
 			if (i % 10 == 0 && i){
 				y++;
-				//printf("Y is %d\n", x)
-			}
-			//printf("I to 240, now: %d \n", i);
-			
-
+			}			
 			for (int j = 0; j < 80; j++){
 				fbp[k++] = score_array[j][i];
 			}
-			
-			
-			
-
-
-			for (int k = 0; k < 240; k++){
-				if (k % 10 == 0 && k){
+			for (int m = 0; m < 240; m++){
+				if (m % 10 == 0 && m){
 					x++;
-					//printf("X is %d\n",x);
 				}
-				//printf("writing to screen\n");
 				fbp[k] = reduced_resolution_graphics_array[x][y];
-				//printf("Writin x,y = %d, %d", x,y);
 				k++;
 			}
 			x = 0;		
-	}	
-	
+	}		
 }
 
 void refresh_score_display(){
