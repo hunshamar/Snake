@@ -1,43 +1,12 @@
-#include <linux/kernel.h>
-#include <linux/module.h>
-#include <linux/init.h>
-#include <linux/fs.h> // Necessary functions to optain device numbers
-#include <linux/ioport.h> 
-#include <linux/cdev.h>
-#include <linux/device.h>
-#include <linux/moduleparam.h>
-#include <linux/kdev_t.h>
-#include <asm/io.h>
-#include <asm/uaccess.h>
-#include "efm32gg.h"
+#include"driver-gamepad.h"
 
-/* Defines */
-#define NAME "gamepad"
-#define COUNT 1
 
-/* Function prototypes */
-
-static int __init gamepad_init(void);
-static void __exit gamepad_cleanup(void);
-static int gamepad_open(struct inode* inode, struct file* filp);
-static int gamepad_release(struct inode* inode, struct file* filp);
-static ssize_t gamepad_read(struct file* filp, char* __user buff,
-        size_t count, loff_t* offp);
-static ssize_t gamepad_write(struct file* filp, char* __user buff,
-        size_t count, loff_t* offp);
-
-/* Static variables */
-static dev_t dev;
-struct cdev gamepad_cdev;
-struct class* cl;
-
-/* Module configs */
 module_init(gamepad_init);
 module_exit(gamepad_cleanup);
-MODULE_DESCRIPTION("Device driver for the gamepad used in TDT4258");
+MODULE_DESCRIPTION("Char driver for gamepad");
 MODULE_LICENSE("GPL");
 
-static struct file_operations gamepad_fops = {
+static struct file_operations my_fops = {
     .owner = THIS_MODULE,
     .open = gamepad_open,
     .release = gamepad_release,
@@ -46,18 +15,9 @@ static struct file_operations gamepad_fops = {
 };
 
 
-/*
- * gamepad_init - function to insert this module into kernel space
- *
- * This is the first of two exported functions to handle inserting this
- * code into a running kernel
- *
- * Returns 0 if successfull, otherwise -1
- */
-
 static int __init gamepad_init(void)
 {
-    printk("Loading gamepad kernel module into .OS\n");
+    printk("Loading gamepad kernel module into OS\n");
 
     /* Allocate major and minor numbers */
     int major_number = alloc_chrdev_region(&dev, 0, COUNT, NAME);
@@ -83,30 +43,27 @@ static int __init gamepad_init(void)
         return -1;
     }
 
-    /* Initialize GPIO */
+    /* Setup for GPIO */
     iowrite32(0x33333333, GPIO_PC_MODEL); // set buttons as input
     iowrite32(0xFF, GPIO_PC_DOUT); // Enable internal pull-up
-    //*CMU_HFPERCLKEN0 |= CMU2_HFPERCLKEN0_GPIO; // Enable GPIO clock
     iowrite32(2, GPIO_PA_CTRL); //SEt high drive strength
-    //iowrite32(0x22222222, GPIO_EXTIPSELL); // SEt pins A8-15 as inputs
 
 
-    /* add device */
-    cdev_init(&gamepad_cdev, &gamepad_fops);
-    gamepad_cdev.owner = THIS_MODULE;
-    cdev_add(&gamepad_cdev, dev, COUNT);
+    /* Allocate and initialize cdev structure */
+    cdev_init(&cdev, &my_fops);
+    cdev.owner = THIS_MODULE;
+    int err = cdev_add(&cdev, dev, COUNT);
+    if (err){
+        printf(KERN_NOTICE "Error %d adding gamepad", err);
+        return -1;
+    }
+        
+    
     cl = class_create(THIS_MODULE, NAME);
     device_create(cl, NULL, dev, NULL, NAME);
 
     return 0;
 }
-
-/*
- * gamepad_exit - function to cleanup this module from kernel space
- *
- * This is the second of two exported functions to handle cleanup this
- * code from a running kernel
- */
 
 static void __exit gamepad_cleanup(void)
 {
@@ -121,49 +78,38 @@ static void __exit gamepad_cleanup(void)
     release_mem_region(GPIO_PC_DOUT, 1);
     
 
-    /* Remove device */
+
     device_destroy(cl, dev);
     class_destroy(cl);
-    cdev_del(&gamepad_cdev);
-    /* Dealloc the device numbers */
+    cdev_del(&cdev);
 }
 
 
-/*
- * gamepad_open - function called when open is called on "/dev/gp0"(?)
- *
- */
 
 static int gamepad_open(struct inode* inode, struct file* filp)
 {
-    printk(KERN_INFO "Gamepad driver opened\n");
+    printk(KERN_INFO "Driver opened\n");
     return 0;
 }
 
-/*
- * gamepad_release - function called when closing
- *
- */
 
 static int gamepad_release(struct inode* inode, struct file* filp)
 {
-    printk(KERN_INFO "Gamepad driver closed\n");
+    printk(KERN_INFO "Driver closed\n");
     return 0;
 }
 
-static ssize_t gamepad_read(struct file* filp, char* __user buff,
-        size_t count, loff_t* offp)
+static ssize_t gamepad_read(struct file* filp, char* __user buff, size_t count, loff_t* offp)
 {
-    /* Read gpio button status and write to buff */
-    uint32_t data = ioread32(GPIO_PC_DIN);
-    //printk(KERN_INFO "Writing %d to buffer\n", data);
-    copy_to_user(buff, &data, 1);
+    // Read button status register
+    uint32_t button_read = ioread32(GPIO_PC_DIN);
+    // Write to buffer
+    copy_to_user(buff, &button_read, 1);
     return 1;
 }
 
-static ssize_t gamepad_write(struct file* filp, char* __user buff,
-        size_t count, loff_t* offp)
+static ssize_t gamepad_write(struct file* filp, char* __user buff, size_t count, loff_t* offp)
 {
-    printk(KERN_INFO "Writing to buttons doesn't make sense.");
+    printk(KERN_INFO "This driver is read only, don't do anything \n");
     return 1;
 }
