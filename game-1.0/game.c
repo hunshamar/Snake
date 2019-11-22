@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
 {
 
 	graphics_init();	
-	snake_game(8);
+	snake_game(12);
 	exit(EXIT_SUCCESS);
 }
 

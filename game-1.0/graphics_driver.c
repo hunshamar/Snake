@@ -55,7 +55,7 @@ void print_string(int x, int y, char* string)
 		char_array[x+i][y] = string[i];
 		i++;
 	}
-	update_text_array();
+	update_text_array(x,y,i);
 	update_screen(x*8,y*8,i*8,8);
 }
 
@@ -67,27 +67,25 @@ bool get_bit(char c, int n)
 }
 
 /* 
-	Updates the text array with correct pixels to print the characters from the character array
+	
+	Updates the 10x30 text array with correct pixels to print the characters from the character array
 	Uses the font.h file to get the 8x8 pixel grid for the characters from the char_array and writes the character
 	in the correct format to the text_array
-
  */
-void update_text_array()
+
+
+void update_text_array(int char_x, int char_y, int length)
 {
-	int x_char = 0;
-	int y_char = 0;
 	char c;
-	for (int y = 0; y < 240; y++)
+	for (int y = char_y*8; y < char_y*8+8; y++)
 	{
-		for (int x = 0; x < 80; x++)
+		for (int x = char_x*8; x < char_x*8+length*8; x++)
 		{	
-			x_char = x / 8;
-			y_char = y / 8;
-			c = char_array[x_char][y_char];
+			c = char_array[x/8][y/8];
 
 
 
-			if (get_bit(font8[c-32][x%8],y%8))
+			if (get_bit(font8[c-32][x%8],y%8)) 
 			{
 				text_array[x][y] = white_color;
 			}
@@ -99,6 +97,7 @@ void update_text_array()
 		}
 	}
 }
+
 
 void initialize_screen_to_black() 
 {

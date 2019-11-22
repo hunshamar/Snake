@@ -27,7 +27,7 @@ void refresh_reduced_grid(int x, int y, int width, int height);
 void refresh_text_display();
 
 void draw_pixel(int x, int y, uint16_t color);
-void update_text_array();
+void update_text_array(int x, int y, int length);
 
 
 void update_score(int score);
