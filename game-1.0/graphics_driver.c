@@ -1,6 +1,9 @@
 #include "graphics_driver.h"
 
- #define grass_color 0x7E0F
+#define grass_color 0x7E0F
+#define black_color 0x0000
+#define white_color 0xffff
+
 
 #include "fonts.h"
 
@@ -39,7 +42,7 @@ void text_array_init()
 	{
 		for (int y = 0; y < 240; y++)
 		{
-			text_array[x][y] = 0x0000; 
+			text_array[x][y] = black_color; 
 		}
 	}	
 }
@@ -57,7 +60,7 @@ void print_string(int x, int y, char* string)
 		i++;
 	}
 	update_char_array();
-	update_screen(0,0,80,240);
+	update_screen(x*8,y*8,i*8,8);
 }
 
 void update_char_array()
@@ -77,15 +80,28 @@ void update_char_array()
 
 			if (get_bit(font8[c-32][x%8],y%8))
 			{
-				text_array[x][y] = 0xffff;
+				text_array[x][y] = white_color;
 			}
 			else
 			{
-				text_array[x][y] = 0x0000;
+				text_array[x][y] = black_color;
 			}
 			
 		}
 	}
+}
+
+void initialize_screen_to_black() 
+{
+    int k = 0;
+    for (int y = 0; y < 240; y++)
+    {
+    	for (int x = 0; x < 320; x++)
+    	{
+    		fbp[k++] = black_color;
+    	}
+    }
+    refresh_framebuffer(0,0,320,240);
 }
 
 void graphics_init()
@@ -103,6 +119,11 @@ void graphics_init()
 	int screensize_bytes = screensize / 8;
 
     fbp = (uint16_t*)mmap(NULL, screensize_bytes, PROT_READ | PROT_WRITE, MAP_SHARED, graphic_memory, 0);
+
+    initialize_screen_to_black();
+
+  
+
  	
 	print_string(2,4,"Score:");
 
@@ -135,17 +156,8 @@ void update_score(int score){
 	char score_buffer[6]; 
     sprintf(score_buffer, "%d", score);
 
-	for (int x = 0; x < 6; x++){
-		if (score_buffer[x] >= '0' && score_buffer[x] <= '9')
-		{
-			print_char(x+2,6, score_buffer[x]); //*string++);
-		}
-		else
-		{
-			print_char(x+2,6, '-'); 
-		}
-	}
-	update_screen(16,48,48,8); // Only update score pixels
+
+    print_string(2,6,score_buffer);
 }
 
 

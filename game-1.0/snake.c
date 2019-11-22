@@ -287,10 +287,10 @@ void end_game(int score)
 
     delete_snake();
     for (int y = 0; y < 3; y++){
-        print_string(0,y, " GAME OVER ");
+        print_string(0,y, " GAME OVER");
     }
     for (int y = 8; y < 30; y++){
-        print_string(0,y, " GAME OVER ");
+        print_string(0,y, " GAME OVER");
     }
 
 
