@@ -13,17 +13,10 @@ typedef struct square
 {
     int x;
     int y;
-<<<<<<< HEAD
-    square* next;
-    square* previous;
-};
-    
-=======
     struct square* next;
     struct square* previous;
 }square;
 
->>>>>>> 3ff8a875e263efef721aaeba5d8b1fa550796a35
 
 
 typedef struct snake
